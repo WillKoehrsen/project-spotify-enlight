@@ -1,12 +1,31 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8"/>
-        <title>*insert title here*</title>
-        <link href="style.css" rel="stylesheet">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Spotify Currently (or recently) Listening</title>
+		<link href="style.css" rel="stylesheet" />
+		<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
 
-    <body>
-    </body>
+  <body>
+    <p>
+      listening to <u><a target="_blank" id="song_title"></a></u> by
+      <span id="artist"></span>
+    </p>
+    <script>
+      var request = new XMLHttpRequest();
+      request.open("GET", "/.netlify/functions/app", true);
+      request.send();
+      request.onload = function () {
+        parsed_response = JSON.parse(request.responseText);
+        document.getElementById("song_title").innerHTML =
+          parsed_response.song_name;
+        document.getElementById("artist").innerHTML = parsed_response.artist;
+        document
+          .getElementById("song_title")
+          .setAttribute("href", parsed_response.song_url);
+      };
+    </script>
+  </body>
 </html>

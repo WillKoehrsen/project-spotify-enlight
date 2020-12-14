@@ -1,0 +1,16 @@
+body  {
+	text-align:  center;
+	font-size:  40px;
+	padding:  35vh  10px  40vh  10px;
+	background-color:  #cbe9ee;
+	font-family: "Nunito", sans-serif;
+}
+
+#song_title,  #artist  {
+	text-decoration:  none;
+	color:  #569fac;
+}
+
+#song_title:hover  {
+	opacity:  0.6;
+}
