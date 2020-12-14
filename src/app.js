@@ -1,27 +1,37 @@
 const express = require("express");
 const serverless = require("serverless-http");
+const dotenv = require("dotenv");
 
 const app = express();
 
 const router = express.Router();
+
 router.get("/", (req, response) => {
   const request = require("request");
-  const client_id = process.env.CLIENT_ID;
-  const client_secret = process.env.CLIENT_SECRET;
-  const refresh_token = process.env.REFRESH_TOKEN;
+  let client_id = process.env.CLIENT_ID;
+  let client_secret = process.env.CLIENT_SECRET;
+  let refresh_token = process.env.REFRESH_TOKEN;
+
+  if (!client_id || !client_secret || !refresh_token) {
+    dotenv.config();
+    client_id = process.env.CLIENT_ID;
+    client_secret = process.env.CLIENT_SECRET;
+    refresh_token = process.env.REFRESH_TOKEN;
+  }
 
   var authOptions = {
     url: "https://accounts.spotify.com/api/token",
     headers: {
       Authorization:
-        "Basic" +
-        new (Buffer(client_id + ":" + client_secret).toString("base64"))(),
+        "Basic " +
+        new Buffer(client_id + ":" + client_secret).toString("base64"),
     },
     form: { grant_type: "refresh_token", refresh_token: refresh_token },
   };
 
   request.post(authOptions, function (error, res) {
-    var header = {
+
+		var header = {
       Authorization: "Bearer " + JSON.parse(res.body).access_token,
     };
     var song_name, artist, song_url;
@@ -44,7 +54,8 @@ router.get("/", (req, response) => {
               headers: header,
             },
             function (error, res, body) {
-              var body_text = JSON.parse(body);
+							var body_text = JSON.parse(body);
+							console.log(body_text);
               var track = body_text.items[0].track;
               song_name = track.name;
               artist = track.artists[0].name;
@@ -57,7 +68,8 @@ router.get("/", (req, response) => {
             }
           );
         } else {
-          var body_text = JSON.parse(body);
+					var body_text = JSON.parse(body);
+					console.log(body_text);
           var track = body_text.item;
           song_name = track.name;
           artist = track.artists[0].name;
